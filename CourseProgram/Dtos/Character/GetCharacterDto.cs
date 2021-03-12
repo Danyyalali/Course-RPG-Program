@@ -1,4 +1,5 @@
-﻿using CourseProgram.Dtos.Weapon;
+﻿using CourseProgram.Dtos.Skills;
+using CourseProgram.Dtos.Weapon;
 using Program.Models;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,11 @@ namespace CourseProgram.Dtos.Character
         public int Strength { get; set; } = 10;
         public int Defense { get; set; } = 10;
         public int Intelligence { get; set; } = 10;
-
         public RpgClass Class { get; set; } = RpgClass.Knight;
-
         public GetWeaponDto Weapon { get; set; }
+        public List<GetSkillDto> Skills { get; set; }
+        public int Fights { get; set; }
+        public int Victories { get; set; }
+        public int Defeats { get; set; }
     }
 }

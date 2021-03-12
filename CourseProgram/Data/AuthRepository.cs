@@ -59,7 +59,7 @@ namespace CourseProgram.Data
                 response.Message = "User already Exist.";
                 return response;
             }
-            CreatepasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+            Utitlity.CreatepasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
@@ -81,16 +81,20 @@ namespace CourseProgram.Data
             return false;
         }
 
-
-
-        private void CreatepasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using(var hmac= new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+        /*
+         * This method of password hash is without the seeding feature
+         * 
+         * 
+         * private void CreatepasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+           {
+                using(var hmac= new System.Security.Cryptography.HMACSHA512())
+                {
+                    passwordSalt = hmac.Key;
+                    passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                }
             }
-        }
+         */
+
     
     
         public bool VerfiyPassword(string password,byte[] passwordHash, byte [] passwordSalt)
@@ -114,7 +118,8 @@ namespace CourseProgram.Data
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name,user.UserName)
+                new Claim(ClaimTypes.Name,user.UserName),
+                new Claim(ClaimTypes.Role,user.Role)
             };
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(

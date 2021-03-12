@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CourseProgram.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Player,Admin")]
     [ApiController]
     [Route("[controller]")]
     public class characterController : ControllerBase

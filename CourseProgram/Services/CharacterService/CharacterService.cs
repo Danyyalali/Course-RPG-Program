@@ -80,7 +80,9 @@ namespace CourseProgram.Services.CharacterService
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
 
             //To get all the charcters from the database
-            List<Character> DbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
+            List<Character> DbCharacters = 
+                GetUserRole().Equals("Admin")? await _context.Characters.ToListAsync():
+                await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
             serviceResponse.Data = (DbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c))).ToList();
 
             //To get all the characters from the list
@@ -94,6 +96,8 @@ namespace CourseProgram.Services.CharacterService
         {
             ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
             Character DbCharacter = await _context.Characters
+                .Include(c => c.Weapon)
+                    .Include(c => c.CharacterSkills).ThenInclude(c => c.Skill)
                 .FirstOrDefaultAsync(c => c.Id == id && c.User.Id == GetUserId());
 
             //to get the data from the list
@@ -155,8 +159,9 @@ namespace CourseProgram.Services.CharacterService
 
         //Method to get the user id of the current user 
         private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-        
-        
-        
+
+        private string GetUserRole () => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+
+
     }
 }
